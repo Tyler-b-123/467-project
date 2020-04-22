@@ -3,9 +3,9 @@
 	<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
 	<link rel="stylesheet" href="customerPage.css">
+	<link rel="stylesheet" href="bar.css">
 	<head><title>Customer Page 5A</title></head>
 	<?php
-		$dom = new DOMDocument('1.0', 'iso-8859-1');
 		$username = "student";
 		$password = "student";
 
@@ -25,21 +25,37 @@
 	?>
 
 	<body>
-	<h1>I am connected to the database</h1>
+	<svg id="bar">
+	   <rect id="barRect" />
+	</svg>
+	   <div class="customerPic">
+		<img src="customer.jpg" />
+	   </div>
+	   <div class="adminPic">
+		<img src="Admin.jpg" />
+	   </div>
+	   <div class="frontdeskPic">
+		<img src="frontdesk.jpg" />
+	   </div>
+	   <div class="warehousePic">
+		<img src="warehouse.jpg" />
+	   </div>
+	<center><h1>Customer Page</h1></center>
 
 	<table id="example" class="display" width="100%"></table>
 
 	<form name="partForm" action="#" method="POST">
 	   <label id="partLabel">Part Number:</label><br>
 	   <input type="text" id="partNum" name="partNum"><br>
-	   <input type="button" value="Submit" onclick="addItem()" id="partButton">
+	   <input type="button" value="Add to Cart" onclick="addItem()" id="partButton">
 	</form>
-
+	<div id="cartTableDiv">
 	<table id="cartTable" class="display" width="60%"></table>
+	</div>
 	<div id ="totals">
 	</div>
 	</body>
-
+	<script src="bar.js"></script>
 	<script type="text/javascript">
 
 	var dataSet = [];

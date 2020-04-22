@@ -1,0 +1,41 @@
+#bar{
+	position: relative;
+	width: 100%;
+	height: 70px;
+}
+#barRect{
+	position: relative;
+	width: 100%;
+	height: 100%;
+	fill: blue;
+	opacity: 0.7;
+	z-index: -1;
+}
+.customerPic{
+	width: 150px;
+	height: 50px;
+	position: absolute;
+	top: 20px;
+	margin-left: 20%;
+}
+.adminPic{
+	width: 150px;
+	height: 50px;
+	position: absolute;
+	top: 20px;
+	margin-left: 40%;
+}
+.frontdeskPic{
+	width: 150px;
+	height: 50px;
+	position: absolute;
+	top: 20px;
+	margin-left: 60%;
+}
+.warehousePic{
+	width: 150px;
+	height: 50px;
+	position: absolute;
+	top: 20px;
+	margin-left: 80%;
+}
