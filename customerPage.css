@@ -24,7 +24,7 @@
 	padding: 10px;
 	text-align: centered;
 }
-$creditCard{
+#creditCard{
 	position: absolute;
 	height: 150px;
 	width: 350px;
