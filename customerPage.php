@@ -2,7 +2,7 @@
 	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 	<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="customerPage.css">
+	<link rel="stylesheet" href="customerpage.css">
 	<link rel="stylesheet" href="bar.css">
 	<head><title>Customer Page 5A</title></head>
 	<?php
@@ -43,7 +43,9 @@
 	<center><h1>Customer Page</h1></center>
 
 	<table id="example" class="display" width="100%"></table>
-
+	<div class="cartIconPic">
+           <img src="CartIcon.png" />
+        </div>
 	<form name="partForm" action="#" method="POST">
 	   <label id="partLabel">Part Number:</label><br>
 	   <input type="text" id="partNum" name="partNum"><br>
@@ -55,6 +57,7 @@
 	<div id ="totals">
 	</div>
 	<div id="creditCard">
+	   <img src="CreditCardPic.png" />
 	   <form name="creditCardForm" action="customerPage.php" method="POST">
 		<label>Vendor:</label>
 		<input type="text" name="vendor"><br>

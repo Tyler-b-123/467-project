@@ -1,0 +1,36 @@
+#totals{
+	position: relative;
+	margin-left: 70%;
+	margin-right: 20%;
+	padding: 10px;
+	text-align: centered;
+}
+#partButton{
+	position: relative;
+	margin-left: 50%;
+	padding: 10px;
+	text-align: centered;
+}
+#partNum{
+	position: relative;
+	margin-left: 50%;
+	padding: 10px;
+	text-allign: centered;
+}
+
+#partLabel{
+	position: relative;
+	margin-left: 50%;
+	padding: 10px;
+	text-align: centered;
+}
+#creditCard{
+	position: relative;
+	height: 150px;
+	width: 350px;
+	left: 40%;
+}
+.cartIconPic{
+	position: relative;
+	left: 50%;
+}
