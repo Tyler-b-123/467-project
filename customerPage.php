@@ -2,7 +2,7 @@
 	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 	<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="customerpage.css">
+	<link rel="stylesheet" href="customerPage.css">
 	<link rel="stylesheet" href="bar.css">
 	<head><title>Customer Page 5A</title></head>
 	<?php
@@ -21,6 +21,7 @@
 
 		$prepared = $pdo->prepare("SELECT * FROM parts");
 		$prepared->execute();
+
 
 	?>
 
@@ -41,16 +42,27 @@
 		<img src="warehouse.jpg" />
 	   </div>
 	<center><h1>Customer Page</h1></center>
-
+	</div>
+	<div id="getName">
+	   <form id="nameForm" action="#" method="POST">
+		<label id="nameLabel">Company Name:</label>
+		<input type="text" id="companyName" name="companyName"><br>
+		<input type="button" value="Submit" onclick="getName()">
+	   </form>
+	</div>
 	<table id="example" class="display" width="100%"></table>
 	<div class="cartIconPic">
            <img src="CartIcon.png" />
         </div>
-	<form name="partForm" action="#" method="POST">
-	   <label id="partLabel">Part Number:</label><br>
+	<div id="partFormCss">
+	<form id="partForm" action="#" method="POST">
+	   <label id="partLabel">Part Number:</label>
 	   <input type="text" id="partNum" name="partNum"><br>
-	   <input type="button" value="Add to Cart" onclick="addItem()" id="partButton">
+	   <label id="partLabel2">QTY:</label>
+	   <input type="text" id="partQty" name="partQty"><br>
+	   <input type="button" value="Add to Cart" onclick="addToCart()">
 	</form>
+	</div>
 	<div id="cartTableDiv">
 	<table id="cartTable" class="display" width="60%"></table>
 	</div>
@@ -58,25 +70,31 @@
 	</div>
 	<div id="creditCard">
 	   <img src="CreditCardPic.png" />
-	   <form name="creditCardForm" action="customerPage.php" method="POST">
+	   <form id="creditCardForm" action="#" method="POST">
 		<label>Vendor:</label>
-		<input type="text" name="vendor"><br>
+		<input type="text" name="vendor" id="vendor"><br>
 		<label>Transaction Number:</label>
-		<input type="text" name="trans"><br>
+		<input type="text" name="trans" id="trans"><br>
 		<label>Credit Card Number:</label>
-		<input type="text" name="cc"><br>
+		<input type="text" name="cc" id="cc"><br>
 		<label>Name:</label>
-		<input type="text" name="name"><br>
+		<input type="text" name="name" id="name"><br>
 		<label>Experation Date:</label>
-		<input type="text" name="exp"><br>
-		<label>Total Due:</label>
-		<input type="text" name="amount"><br>
-		<input type="submit" value="Pay" name="ccButton" onclick="pay()" id="paymentButton">
+		<input type="text" name="exp" id="exp"><br>
+		<input type="button" value="Pay" onclick="pay()">
 	   </form>
 	</div>
 	</body>
 	<script src="bar.js"></script>
 	<script type="text/javascript">
+
+	var name;
+	function getName(){
+	   name = document.getElementById("companyName").value;
+	   alert("Thank you for letting us know who you are you may now proceed.");
+	}
+
+
 
 	var dataSet = [];
 	var cartDataSet = [];
@@ -107,33 +125,52 @@
 	  	} );
 	   }
 
-	   function addItem(){
-		console.log("hi");
-		var partNum = document.getElementById("partNum").value;
-		console.log(partNum);
-		var i = 0;
+	   function addToCart(){
+		   console.log("hi");
+                var partNum = document.getElementById("partNum").value;
+                var partQty = document.getElementById("partQty").value;
+                console.log(partNum);
+                console.log(partQty);
 
-		while (i < dataSet.length){
-		   if (dataSet[i][1] == partNum){
-			cartDataSet.push([dataSet[i][0], dataSet[i][2], dataSet[i][4]]);
-			console.log(cartDataSet[0]);
 
-			var c = 0;
-			var temp = 0.00;
-			var placeholder = dataSet[i][4];
-			placeholder = placeholder.substring(1);
-			var value = parseFloat(placeholder);
-			totals = totals + value;
-			var totalsTemp = totals.toFixed(2);
-			totalsOutput = totalsTemp;
-			console.log(totalsOutput);
-			createCartTable();
-		   }
-		   i++;
-		}
+
+                var i = 0;
+
+                while (i < dataSet.length){
+                   if (dataSet[i][1] == partNum){
+
+                        cartDataSet.push([dataSet[i][0], dataSet[i][2], partQty, dataSet[i][4]]);
+                        console.log(cartDataSet[0]);
+
+                        var c = 0;
+                        var temp = 0.00;
+                        var placeholder = dataSet[i][4];
+                        placeholder = placeholder.substring(1);
+                        var value = parseFloat(placeholder);
+                        totals = totals + (value * partQty);
+                        var totalsTemp = totals.toFixed(2);
+                        totalsOutput = totalsTemp;
+                        console.log(totalsOutput);
+
+
+			var request = $.ajax({
+			   type: "POST",
+			   url: "http://students.cs.niu.edu/~z1782665/467group/sendToMe.php",
+			   data:
+			   {
+				name: name,
+				number: partNum,
+				qty: partQty
+			   },
+			   dataType: "html"
+		   	});
+                        createCartTable();
+                   }
+                   i++;
+                }
+
 
 	   }
-
 	   function createCartTable(){
 		$(document).ready(function() {
 		   $('#cartTable').DataTable( {
@@ -143,6 +180,7 @@
 			columns: [
 			   { title: "Picture" },
 			   { title: "Description" },
+			   { title: "QTY" },
 			   { title: "Price"}
 			]
 		   } );
@@ -150,67 +188,37 @@
 		var x = document.getElementById("totals");
 		x.innerHTML ="Total:     " + "$" + totalsOutput.toString();
 
-		document.getElementsByName('amount')[0].value = totalsOutput.toString();
-
 	   }
+
 	function pay(){
-	   <?php
-		$vendor = NULL;
-		$trans = NULL;
-		$cc = NULL;
-		$name = NULL;
-		$exp = NULL;
-		$amount = NULL;
+	   var vendor = document.getElementById("vendor").value;
+	   var trans = document.getElementById("trans").value;
+	   var cc = document.getElementById("cc").value;
+	   var name = document.getElementById("name").value;
+	   var exp = document.getElementById("exp").value;
+	   var amount = totalsOutput;
 
-		if (isset($_POST['amount'])){
-		   $amount = $_POST['amount'];
-		}
-		if (isset($_POST['vendor'])){
-		   $vendor = $_POST['vendor'];
-		}
-		if (isset($_POST['trans'])){
-		   $trans = $_POST['trans'];
-		}
-		if (isset($_POST['cc'])){
-		   $cc = $_POST['cc'];
-		}
-		if (isset($_POST['name'])){
-		   $name = $_POST['name'];
-		}
-		if (isset($_POST['exp'])){
-		   $exp = $_POST['exp'];
-		
-
-		$url = 'http://blitz.cs.niu.edu/CreditCard/';
-		$data = array(
-		   'vendor' => $vendor,
-		   'trans' => $trans,
-		   'cc' => $cc,
-		   'name' => $name,
-		   'exp' => $exp,
-		   'amount' => $amount);
-		$options = array(
-		   'http' => array(
-			'header' => array('Content-type:application/json','Accept: application/json'),
-			'method' => 'POST',
-			'content' => json_encode($data)
-		   )
-		);
-
-		$context = stream_context_create($options);
-		$result = file_get_contents($url, false, $context);
-//		echo($result);
-
-		$vendor = NULL;
-                $trans = NULL;
-                $cc = NULL;
-                $name = NULL;
-                $exp = NULL;
-		$amount = NULL;
-		}
-	   ?>
-	alert("Transaction Successful Reloading Page");
-}
+	   var request = $.ajax({
+		type: "POST",
+		url: "http://students.cs.niu.edu/~z1782665/467group/sendToMe.php",
+		data:
+		{
+		   vendor: vendor,
+		   trans: trans,
+		   cc: cc,
+		   name: name,
+		   exp: exp,
+		   amount: amount
+		},
+		dataType: "html"
+	});
+	request.done(function(msg) {
+	   alert("order was succesfull emailing you conformation.");
+	});
+	request.fail(function(jqXHR, textStatus) {
+	   alert("Request failed: " + textStatus);
+	});
+	}
 </script>
 
 </html>
