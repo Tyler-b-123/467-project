@@ -11,7 +11,7 @@ catch(PDOexception $e){
 	echo "Connection to the database failed: " . $e->getMessagee();
 }
 
-$insert = "INSERT INTO warehouse (name, number, qty) VALUES (?,?,?)";
+$insert = "INSERT INTO warehouse (name, email, number, qty) VALUES (?,?,?,?)";
 $stmt = $pdo->prepare($insert);
 
 
@@ -23,10 +23,11 @@ if (isset($_POST['number'])){
 }
 if (isset($_POST['qty'])){
    $qty = $_POST['qty'];
+   $email = $_POST['email'];
 
    echo "hi";
 
-   $stmt->execute([$name, $number, $qty]);
+   $stmt->execute([$name, $email, $number, $qty]);
 }
 
 
@@ -71,4 +72,31 @@ if (isset($_POST['exp'])){
     echo($result);
 
 }
+
+if (isset($_POST['updateNumber'])){
+   $updateNumber = $_POST['updateNumber'];
+}
+if (isset($_POST['updateQty'])){
+
+   $updateQty = $_POST['updateQty'];
+
+   $oldQty = $pdo->prepare("SELECT * FROM quantity where number = :number");
+   $oldQty->bindParam(':number', $updateNumber);
+   $oldQty->execute();
+
+   $newQtyRow = $oldQty->fetch();
+   $newQty = $newQtyRow['qty'];
+
+   $newQty += $updateQty;
+
+   $updateDB = $pdo->prepare("UPDATE quantity SET qty =? WHERE  number =?");
+   $updateDB->execute([$newQty, $updateNumber]);
+
+   echo "New quantity: ";
+   echo $newQty;
+   echo " for part: ";
+   echo $updateNumber;
+
+}
+
 ?>

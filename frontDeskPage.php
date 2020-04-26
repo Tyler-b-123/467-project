@@ -7,11 +7,11 @@
 	<title>Front Desk Page</title>
 
 	<?php
-                $username = "student";
-                $password = "student";
+                $username = "z1782665";
+                $password = "1996Oct06";
 
                 try{
-                        $dsn = "mysql:host=blitz.cs.niu.edu;dbname=csci467";
+                        $dsn = "mysql:host=courses;dbname=test";
                         $pdo = new PDO($dsn, $username, $password);
                 }
                 catch(PDOexception $e){
@@ -19,9 +19,6 @@
                 }
 
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-
-                $prepared = $pdo->prepare("SELECT * FROM parts");
-                $prepared->execute();
 
         ?>
 
@@ -45,8 +42,41 @@
            </div>
 
 	<center><h1>Front Desk Page</h1><center>
+	<div="updateFormDiv">
+	   <p>Update items qty based on whats available</p>
+	   <form id="updateForm" action="#" method="POST">
+		<label id="numberLabel">Part Number:</label>
+		<input type="text" id="updateNumber"><br>
+		<label id="qtyLabel">Amount recieved:</label>
+		<input type="text" id="updateQty"><br>
+		<input type="button" value="Update Database" onclick="updateDatabase()">
+	   </form>
+	</div>
    </body>
-
    <script src="bar.js"></script>
+
+   <script type="text/javascript">
+
+	function updateDatabase(){
+	   var updateNumber = document.getElementById("updateNumber").value;
+	   var updateQty = document.getElementById("updateQty").value;
+
+	   var request = $.ajax({
+		type: "POST",
+		url: "http://students.cs.niu.edu/~z1782665/467group/sendToMe.php",
+		data:
+		{
+		   updateNumber: updateNumber,
+		   updateQty: updateQty
+		},
+		dataType: "html"
+	   });
+	   request.done(function(msg) {
+		alert(msg);
+	   });
+
+	}
+
+   </script>
 
 </html>
