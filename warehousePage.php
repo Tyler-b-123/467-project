@@ -20,7 +20,7 @@
 
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
-                $prepared = $pdo->prepare("SELECT * FROM warehouse");
+                $prepared = $pdo->prepare("SELECT * FROM warehouse ORDER BY name DESC");
 
 		$prepared2 = $pdo->prepare("SELECT * FROM quantity");
 
@@ -43,14 +43,32 @@
                 <img src="warehouse.jpg" />
            </div>
 
-	<center><h1>Warehouse Page</h1><center>
-	<table id="example" class="display" width="40%"></table>
-	<div id ="parent"></div>
-   </body>
+	<center><h1>Warehouse Page</h1><center> <table id="example" class="display" width="40%"></table>
+	<div id="parent"></div>
+	<br>
+	<div id="permissionForm">
+	   <form id="permission" action="#" method="POST"> </body>
+	   <label id="customerNameLabel">Customer Name:</lable>
+	   <input type="text" id="customerName" name="Customer Name"><br>
+	   <label id="dateLabel">Date: (DD/MM/YYYY)</label>
+	   <input type="text" id="date" name="Date"><br>
+	   <input type="button" value="Accept Order" onclick="acceptOrder()">
+	   <input type="button" value="Deny Order" onclick="deleteOrder()">
+	   </form>
+	</div>
+
+	<style>
+	   #parent table, #parent th, #parent tr{
+		border: 1px solid black;
+		border-collapse: collapse;
+	   }
+	   #parent th, #parent td{
+		padding: 5px;
+	   }
+	</style>
 
    <script src="bar.js"></script>
    <script type="text/javascript">
-
 
 	var dataSet = [];
 	<?php $prepared2->execute(); ?>
@@ -86,8 +104,9 @@
 	   var email = "<?php echo ($row2['email']); ?>";
 	   var number = <?php echo ($row2['number']); ?>;
 	   var qty = <?php echo ($row2['qty']); ?>;
+	   var address = "<?php echo ($row2['address']); ?>";
 
-	   temp.push([name, email, number, qty]);
+	   temp.push([name, email, number, qty, address]);
 
 	<?php endwhile; ?>
 	   console.log(temp);
@@ -167,6 +186,96 @@
 	   }
 	   }
 
+	}
+	function acceptOrder(){
+	   var acceptName = document.getElementById("customerName").value;
+	   var acceptDate = document.getElementById("date").value;
+
+	   console.log(acceptName);
+	   console.log(acceptDate);
+
+	   var request = $.ajax({
+		type: "POST",
+		url: "http://students.cs.niu.edu/~z1782665/467group/sendToMe.php",
+		data:
+		{
+		   acceptName: acceptName,
+		   acceptDate: acceptDate
+		},
+		dataType: "html"
+	   });
+	   request.done(function(msg){
+		alert(msg);
+	   });
+
+	   var acceptAddress;
+
+	   for(var it = 0; it < temp.length; it++){
+		if(acceptName === temp[it][0]){
+		   acceptAddress = temp[it][4];
+
+		   var request1 = $.ajax({
+        	        type: "POST",
+                	url: "http://students.cs.niu.edu/~z1782665/467group/sendToMe.php",
+                	data:
+                	{
+				removeNumber: temp[it][2],
+				removeQty: temp[it][3]
+                	},
+               		dataType: "html"
+	           	});
+
+
+	        }
+	   }
+
+	   var message = "Shipping label\nName: ";
+	   message += acceptName + '\nAddress:';
+	   message += acceptAddress + '\nDate Shipped:';
+	   message += acceptDate;
+
+	   var fileName = acceptName + 'Label' + '.txt';
+
+	   download(fileName, message);
+	   setTimeout(function() {
+		document.location.reload(true);
+	   }, 1000);
+	}
+
+	function deleteOrder(){
+	   var deleteName = document.getElementById("customerName").value;
+
+	   var request = $.ajax({
+		type: "POST",
+		url: "http://students.cs.niu.edu/~z1782665/467group/sendToMe.php",
+		data:
+		{
+		   deleteName: deleteName
+		},
+		dataType: "html"
+	   });
+	   request.done(function(msg){
+		console.log(msg);
+	   });
+
+	   setTimeout(function() {
+                document.location.reload(true);
+           }, 1000);
+
+	}
+
+
+	function download(filename, text){
+	   var element = document.createElement('a');
+    	   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    	   element.setAttribute('download', filename);
+
+    	   element.style.display = 'none';
+    	   document.body.appendChild(element);
+
+    	   element.click();
+
+    	   document.body.removeChild(element);
 	}
 
    </script>

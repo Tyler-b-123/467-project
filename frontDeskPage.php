@@ -7,18 +7,21 @@
 	<title>Front Desk Page</title>
 
 	<?php
-                $username = "z1782665";
-                $password = "1996Oct06";
+		$username= "student";
+		$password = "student";
 
                 try{
-                        $dsn = "mysql:host=courses;dbname=test";
-                        $pdo = new PDO($dsn, $username, $password);
+			$dsn = "mysql:host=blitz.cs.niu.edu;dbname=csci467";
+			$pdo = new PDO($dsn, $username, $password);
                 }
                 catch(PDOexception $e){
                         echo "Connection to the database failed: " . $e->getMessage();
                 }
 
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
+		$prepared = $pdo->prepare("SELECT * FROM parts");
+		$prepared->execute();
 
         ?>
 
@@ -43,6 +46,7 @@
 
 	<center><h1>Front Desk Page</h1><center>
 	<div="updateFormDiv">
+	<table id="example" class="display" width="100%"></table>
 	   <p>Update items qty based on whats available</p>
 	   <form id="updateForm" action="#" method="POST">
 		<label id="numberLabel">Part Number:</label>
@@ -56,6 +60,33 @@
    <script src="bar.js"></script>
 
    <script type="text/javascript">
+
+	var dataSet = [];
+
+	<?php while($row = $prepared->fetch() ): ?>
+                var image = "<?php echo ($row['pictureURL']); ?>"
+                        //maybe will work
+                dataSet.push(["<img src='<?php echo ($row['pictureURL']); ?>' />", "<?php echo ($row['number']); ?>", "<?php echo ($row['description']); ?>",
+                "<?php echo ($row['weight']); ?>", "$<?php echo ($row['price']); ?>" ]);
+        <?php endwhile; ?>
+	createTable();
+
+	function createTable(){
+
+                $(document).ready(function() {
+                   $('#example').DataTable(  {
+                        data: dataSet,
+                        columns: [
+                           { title: "Picture" },
+                           { title: "Part Number" },
+                           { title: "Description" },
+                           { title: "Weight" },
+                           { title: "Price" }
+                        ]
+
+                   } );
+                } );
+           }
 
 	function updateDatabase(){
 	   var updateNumber = document.getElementById("updateNumber").value;
