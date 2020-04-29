@@ -10,20 +10,19 @@
 		$username= "student";
 		$password = "student";
 
-                try{
-			$dsn = "mysql:host=blitz.cs.niu.edu;dbname=csci467";
+      try{
+		   $dsn = "mysql:host=blitz.cs.niu.edu;dbname=csci467";
 			$pdo = new PDO($dsn, $username, $password);
-                }
-                catch(PDOexception $e){
-                        echo "Connection to the database failed: " . $e->getMessage();
-                }
-
-                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+      }
+      catch(PDOexception $e){
+         echo "Connection to the database failed: " . $e->getMessage();
+      }
+         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
 		$prepared = $pdo->prepare("SELECT * FROM parts");
 		$prepared->execute();
 
-        ?>
+   ?>
 
 
    </head>
@@ -63,16 +62,18 @@
 
 	var dataSet = [];
 
+   //stores info from csci467 database to then display
 	<?php while($row = $prepared->fetch() ): ?>
+
                 var image = "<?php echo ($row['pictureURL']); ?>"
-                        //maybe will work
                 dataSet.push(["<img src='<?php echo ($row['pictureURL']); ?>' />", "<?php echo ($row['number']); ?>", "<?php echo ($row['description']); ?>",
                 "<?php echo ($row['weight']); ?>", "$<?php echo ($row['price']); ?>" ]);
+
         <?php endwhile; ?>
 	createTable();
 
+   //creates the table
 	function createTable(){
-
                 $(document).ready(function() {
                    $('#example').DataTable(  {
                         data: dataSet,
@@ -83,11 +84,11 @@
                            { title: "Weight" },
                            { title: "Price" }
                         ]
-
                    } );
                 } );
            }
 
+   //sends a post to sendToMe.php which will update the quantity database with the new stock
 	function updateDatabase(){
 	   var updateNumber = document.getElementById("updateNumber").value;
 	   var updateQty = document.getElementById("updateQty").value;
@@ -105,9 +106,6 @@
 	   request.done(function(msg) {
 		alert(msg);
 	   });
-
 	}
-
    </script>
-
 </html>

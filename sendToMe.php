@@ -14,6 +14,7 @@ catch(PDOexception $e){
 $insert = "INSERT INTO warehouse (name, email, number, qty, address) VALUES (?,?,?,?,?)";
 $stmt = $pdo->prepare($insert);
 
+//this will update the quantity table when a purchase is made subtracts total bought
 if (isset($_POST['removeNumber'])){
 
    $removeNumber = $_POST['removeNumber'];
@@ -31,6 +32,7 @@ if (isset($_POST['removeNumber'])){
    $updateQty->execute([$newQty, $removeNumber]);
 }
 
+//this will delete an order from the warehousee and admin if the order cannot be fufilled
 if (isset($_POST['deleteName'])){
    $deleteName = $_POST['deleteName'];
 
@@ -44,6 +46,7 @@ if (isset($_POST['deleteName'])){
 
 }
 
+//this will update the admin table with a status of shipped and delete the order from the warehouse table
 if (isset($_POST['acceptName'])){
    $acceptName = $_POST['acceptName'];
    $acceptDate = $_POST['acceptDate'];
@@ -54,6 +57,7 @@ if (isset($_POST['acceptName'])){
    $deleteRow1->execute([$acceptName]);
 }
 
+//this will update the shipping table based on what an admin changes
 if (isset($_POST['shippingPlacment0'])){
 
    $shippingStatment = "UPDATE shipping SET first=?, second=?, price=? WHERE placment=?";
@@ -87,12 +91,9 @@ if (isset($_POST['shippingPlacment0'])){
 
    $shippingUpdate->execute([$shippingFirst3, $shippingSecond3, $shippingPrice3, $shippingPlacment3]);
 
-
-
-
 }
 
-
+//adds order to the warehouse
 if (isset($_POST['name'])){
    $name = $_POST['name'];
 }
@@ -109,7 +110,7 @@ if (isset($_POST['qty'])){
    $stmt->execute([$name, $email, $number, $qty, $address]);
 }
 
-
+//sends payment through credit card server
 if (isset($_POST['amount'])){
    $amount = $_POST['amount'];
 }
@@ -153,6 +154,7 @@ if (isset($_POST['exp'])){
 
 }
 
+//adds an order to the admin table when the payment is ran
 if (isset($_POST['customerName'])){
    $customerName = $_POST['customerName'];
    $customerWeight = $_POST['customerWeight'];
@@ -163,6 +165,7 @@ if (isset($_POST['customerName'])){
 
 }
 
+//allows the front desk to update the quantity of the quantity table
 if (isset($_POST['updateNumber'])){
    $updateNumber = $_POST['updateNumber'];
 }
